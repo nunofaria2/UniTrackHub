@@ -8,36 +8,98 @@
 </head>
 <body class="bg-light">
 
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-primary text-white text-center">
-                        <h4>Login</h4>
-                    </div>
-                    <div class="card-body">
-                        <form method="post" action="Main.html">
-                            <div class="form-group">
-                                <label for="email">Email:</label>
-                                <input type="email" class="form-control" id="email" name="email">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="password">Password:</label>
-                                <input type="password" class="form-control" id="password" name="password">
-                            </div>
-                            
-                            <button type="submit" class="btn btn-primary btn-block">Login</button>
-                        </form>
-                        <p class="mt-3 text-center">Não tem uma conta? <a href="Register.html">Registar</a></p>
-                    </div>
-                    <div class="card-footer text-center">
-                        <a href="ForgotPass.html">Forgot password?</a>
-                    </div>
+    <!-- Custom Header -->
+    <header class="bg-dark text-white p-4">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h1>UniTrackHub</h1>
+                </div>
+                <div class="col text-right">
+                    <a href="#" class="btn btn-link text-white">Contatos</a>
+                    <a href="#" class="btn btn-link text-white">Sobre</a>
+                    <button type="button" class="btn btn-primary" onclick="openModal('ModalLogin')">Login</button>
+                    <button type="button" class="btn btn-primary" onclick="openModal('ModalRegister')">Register</button>
                 </div>
             </div>
         </div>
+    </header>
+
+    <!-- Login Modal -->
+    <div class="modal" id="ModalLogin" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="close" onclick="closeModal('ModalLogin')" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="Main.html">
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" id="email" name="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" class="form-control" id="password" name="password">
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('ModalLogin')">Close</button>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+                </form>
+            </div>
+        </div>
     </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="ModalRegister" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Register</h5>
+                    <button type="button" class="close" onclick="closeModal('ModalRegister')" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="Main.html">
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" id="email" name="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" class="form-control" id="password" name="password">
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('ModalRegister')">Close</button>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            var modal = document.getElementById(modalId);
+            modal.style.display = 'block';
+            document.body.classList.add('modal-open');
+        }
+
+        function closeModal(modalId) {
+            var modal = document.getElementById(modalId);
+            modal.style.display = 'none';
+            document.body.classList.remove('modal-open');
+        }
+    </script>
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
