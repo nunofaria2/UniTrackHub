@@ -1,0 +1,17 @@
+[
+    {
+      "title": "Aniversário do João",
+      "start": "2024-04-10"
+    },
+    {
+      "title": "Reunião de equipe",
+      "start": "2024-04-15",
+      "end": "2024-04-16"
+    },
+    {
+      "title": "Entrega do Projeto",
+      "start": "2024-04-20T10:00:00",
+      "end": "2024-04-20T14:00:00"
+    }
+  ]
+  
