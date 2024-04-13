@@ -8,21 +8,21 @@
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.11/index.global.min.js'></script>
     <script>
 
-    document.addEventListener('DOMContentLoaded', function()
+document.addEventListener('DOMContentLoaded', function()
+{
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl,
     {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl,
-        {
         initialView: 'timeGridWeek',
         locale: 'pt', // Set the locale to Portuguese
         slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: false }, // Display hours and minutes with zero padding
         slotDuration: '00:30:00', // Change the slot duration to 30 minutes
         slotMinTime: '07:00:00', // Change the minimum time to display
         slotMaxTime: '24:00:00',// Change the maximum time to display
-        events: 'Horario.json'
+        events: 'HorariosTurmas.json' // Carrega os eventos do arquivo JSON
     });
-        calendar.render();
-    });
+    calendar.render();
+});
 
     </script>
 </head>
@@ -43,6 +43,28 @@
     <br><br><br> <br><br>
 
     <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="curso">Curso:</label>
+                    <select class="form-control" id="curso">
+                        <option value="curso1">Curso 1</option>
+                        <option value="curso2">Curso 2</option>
+                        <!-- Adicione mais opções de cursos conforme necessário -->
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="turma">Turma:</label>
+                    <select class="form-control" id="turma">
+                        <option value="turma1">Turma 1</option>
+                        <option value="turma2">Turma 2</option>
+                        <!-- Adicione mais opções de turmas conforme necessário -->
+                    </select>
+                </div>
+            </div>
+        </div>
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div id='calendar'></div>
