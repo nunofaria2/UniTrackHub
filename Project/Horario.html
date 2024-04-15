@@ -8,21 +8,30 @@
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.11/index.global.min.js'></script>
     <script>
 
-    document.addEventListener('DOMContentLoaded', function()
+document.addEventListener('DOMContentLoaded', function() {
+    // Seleciona o elemento HTML com o ID 'calendar'
+    var calendarEl = document.getElementById('calendar');
+    // Inicializa um novo objeto FullCalendar com o elemento selecionado
+    var calendar = new FullCalendar.Calendar(calendarEl,
     {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl,
-        {
+        // Define a visualização inicial como 'timeGridWeek'
         initialView: 'timeGridWeek',
-        locale: 'pt', // Set the locale to Portuguese
-        slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: false }, // Display hours and minutes with zero padding
-        slotDuration: '00:30:00', // Change the slot duration to 30 minutes
-        slotMinTime: '07:00:00', // Change the minimum time to display
-        slotMaxTime: '24:00:00',// Change the maximum time to display
+        // Define a localidade para Português
+        locale: 'pt',
+        // Formato do rótulo do slot para exibir horas e minutos
+        slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: false },
+        // Define a duração do slot para 30 minutos
+        slotDuration: '00:30:00',
+        // Define o horário mínimo para exibição
+        slotMinTime: '07:00:00',
+        // Define o horário máximo para exibição
+        slotMaxTime: '24:00:00',
+        // Define o ficheiro JSON que contém os eventos
         events: 'Horario.json'
     });
-        calendar.render();
-    });
+    // Renderiza o calendário
+    calendar.render();
+});
 
     </script>
 </head>
