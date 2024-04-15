@@ -6,16 +6,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <title>Login</title>
 </head>
-<body> 
+<body>
 
     <header class="bg-dark text-white p-4 fixed-top">
+        <!-- Cabeçalho fixo com fundo escuro e texto branco -->
         <div class="container">
+            <!-- Container -->
             <div class="row">
+                <!-- Linha -->
                 <div class="col">
+                    <!-- Coluna -->
                     <h1>UniTrackHub</h1>
+                    <!-- Título do cabeçalho -->
                 </div>
                 <div class="col text-right">
+                    <!-- Coluna alinhada à direita -->
                     <a href="Index.html" class="btn btn-link text-white">Back</a>
+                    <!-- Link para voltar à página Index -->
                 </div>
             </div>
         </div>
@@ -24,32 +31,47 @@
     <br><br><br><br><br>
 
     <div class="container mt-5">
+        <!-- Container com margem no topo -->
         <div class="row justify-content-center">
+            <!-- Linha centralizada -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-dark text-white text-center">
+                        <!-- Cabeçalho do cartão com fundo escuro, texto branco e centralizado -->
                         <h4>Login</h4>
                     </div>
                     <div class="card-body">
+                        <!-- Corpo do cartão -->
                         <form method="post" action="Main.html">
+                            <!-- Formulário com método POST que envia para "Main.html" -->
                             <div class="form-group">
+                                <!-- Grupo de formulário -->
                                 <label for="username">Utilizador:</label>
+                                <!-- Campo de utilizador -->
                                 <input type="text" class="form-control" id="username" name="username">
+                                <!-- Campo de entrada de texto para o nome do utilizador -->
                             </div>
 
                             <div class="form-group">
+                                <!-- Outro grupo de formulário -->
                                 <label for="password">Passe:</label>
+                                <!-- Campo da passe -->
                                 <input type="password" class="form-control" id="password" name="password">
+                                <!-- Campo de entrada da passe -->
                             </div>
                             
                             <button type="submit" class="btn btn-dark btn-block">Login</button>
+                            <!-- Botão de envio com estilo escuro e largura de bloco -->
                         </form>
                     </div>
                     <div class="card-footer text-center">
+                        <!-- Rodapé do cartão com texto centralizado -->
                         <p>Não tem uma conta? <a href="Register.html">Registar</a></p>
+                        <!-- Texto para registar uma nova conta com link para a pag "Register.html" -->
                         <p>Esqueceu sua senha? <a href="ForgotPass.html">Recuperar Senha</a></p>
+                        <!-- Texto para recuperar a pass com link para a pag "ForgotPass.html" -->
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
     </div>
