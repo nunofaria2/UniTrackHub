@@ -1,0 +1,64 @@
+.profile-image {
+    width: 250px;
+    height: 250px;
+}
+.profile-title {
+text-align: left;
+}
+.box {
+display: flex;
+justify-content: flex-start; 
+align-items: center;
+height: 20vh;
+position: relative;
+margin-left: 10vh;
+}
+
+.caixa_horarios {
+display: flex;
+align-items: center;
+width: 600px; 
+border: 4px solid black;
+border-radius: 10px;
+padding: 10px;
+box-sizing: border-box;
+
+}
+.input-con a {
+text-decoration: none; 
+color: inherit; 
+display: inline-block; 
+text-align: right; 
+width: 100%; 
+}
+.input-con a h1 {
+font-size: 36px;
+}
+.align-image {
+width: 100px; 
+height: 100px; 
+object-fit: cover; 
+}
+.caixa {
+display: flex;
+justify-content: flex-start; 
+align-items: center;
+height: 20vh;
+position: relative;
+margin-top: 250px;
+margin-left: 15vh;
+}
+.informacao {
+display: flex;
+align-items: center;
+width: 600px; 
+border: 4px solid black;
+border-radius: 10px;
+padding: 10px;
+box-sizing: border-box;
+
+}
+.input-informacao{
+
+text-align: left;
+}
