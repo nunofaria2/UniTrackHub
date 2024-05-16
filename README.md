@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 # UniTrackHub
 ```
 UniTrackHub
@@ -86,3 +87,6 @@ UniTrackHub
 └─ server.js
 
 ```
+=======
+# UniTrackHub 
+>>>>>>> Stashed changes

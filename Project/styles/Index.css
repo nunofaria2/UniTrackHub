@@ -1,3 +1,8 @@
 body {
     font-family: Arial, sans-serif;
+<<<<<<< Updated upstream
 }
+=======
+    padding-top: 120px; /* Ajuste para compensar a altura do cabeçalho fixo */
+} 
+>>>>>>> Stashed changes

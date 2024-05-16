@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 // authRoutes.js
 
 const express = require('express');
@@ -11,3 +12,6 @@ router.post('/signin', authController.signIn);
 router.post('/signup', authController.signUp);
 
 module.exports = router;
+=======
+ 
+>>>>>>> Stashed changes

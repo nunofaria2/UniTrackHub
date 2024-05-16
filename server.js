@@ -18,4 +18,9 @@ app.use('/backoffice', backofficeRoutes);
 const port = process.env.SERVER_PORT || 8080;
 app.listen(port, () => {
     console.log('Express server listening on port', port)
+<<<<<<< Updated upstream
 });
+=======
+});
+ 
+>>>>>>> Stashed changes
