@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">    <title>Register</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Register</title>
 </head>
 <body>
 
@@ -20,33 +21,27 @@
         </div>
     </header>
 
-    <br><br><br><br><br>
-
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-dark text-white text-center">
                         <h4>Register</h4>
-                    </div> 
+                    </div>
                     <div class="card-body">
-                        <form method="post" action="">
-
+                        <form id="registrationForm">
                             <div class="form-group">
                                 <label for="name">Nome:</label>
                                 <input type="text" class="form-control" id="name" name="name">
                             </div>
-
-                            <div class="form-group"> 
-                                <label for="username">Email:</label>
+                            <div class="form-group">
+                                <label for="email">Email:</label>
                                 <input type="text" class="form-control" id="email" name="email">
                             </div>
-
                             <div class="form-group">
                                 <label for="password">Passe:</label>
-                                <input type="password" class="form-control" id="password" name="password">
+                                <input type="passe" class="form-control" id="passe" name="password">
                             </div>
-                            
                             <button type="button" class="btn btn-dark btn-block" onclick="realizarRegister()">Register</button>
                         </form>
                     </div>
@@ -60,30 +55,31 @@
 
     <script>
         function realizarRegister() {
-          var nome = document.getElementById('nome').value;
-          var email = document.getElementById('email').value;
-    
-        
-          fetch('/api/register', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ 
-              nome: nome, 
-              email: email, 
-            }),
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log('Success:', data);
-            window.location.href = "main";
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-        }
-        </script>
+            const nome = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const passe = document.getElementById('password').value;
 
+            fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nome: nome,
+                    email: email,
+                    passe: passe,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // Redirecionar para a página principal após o registo
+                window.location.href = "main";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
 </body>
 </html>

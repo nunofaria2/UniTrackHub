@@ -16,7 +16,7 @@ router.get('/login', (req, res) => {
   res.sendFile(filePath);
 });
 
-// Endpoint para a página de registro
+// Endpoint para a página de registo
 router.get('/register', (req, res) => {
   const filePath = path.join(__dirname, '../frontEnd/Register.html');
   console.log('Serving:', filePath); // Log para verificar o caminho
@@ -29,6 +29,5 @@ router.get('/forgotpassword', (req, res) => {
   console.log('Serving:', filePath); // Log para verificar o caminho
   res.sendFile(filePath);
 });
-
 
 module.exports = router;

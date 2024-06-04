@@ -13,7 +13,7 @@ app.use(cors());
 
 app.use('/api/', publicoRouter);
 app.use('/api/msql/', routerMsql);
-app.use('/pri/', privadoRouter);  
+app.use('/pri/', privadoRouter);
 
 const port = process.env.SERVER_PORT || 8080;
 app.listen(port, () => {

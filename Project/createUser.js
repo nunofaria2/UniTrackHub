@@ -6,9 +6,6 @@ async function main() {
     data: {
       Nome: 'Nome do Utilizador',
       Email: 'email@exemplo.com',
-      Dia_semana: 'Segunda-feira',
-      Hora_Inicio: new Date('1970-01-01T09:00:00.000Z'),
-      Hora_Fim: new Date('1970-01-01T17:00:00.000Z'),
     },
   });
 
