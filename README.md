@@ -13,6 +13,12 @@ UniTrackHub
    │  ├─ HorariosTurmas.html
    │  └─ Main.html
    ├─ controllers
+   │  └─ msql
+   │     └─ userController.js
+   ├─ createUser.js
+   ├─ data
+   │  └─ prisma
+   │     └─ schema.prisma
    ├─ frontEnd
    │  ├─ ForgotPass.html
    │  ├─ Index.html
@@ -20,9 +26,14 @@ UniTrackHub
    │  └─ Register.html
    ├─ package-lock.json
    ├─ package.json
+   ├─ prisma
+   │  └─ schema.prisma
    ├─ README.md
    ├─ routes
-   │  └─ index.js
+   │  ├─ msql
+   │  │  └─ userRoute.js
+   │  ├─ privado.js
+   │  └─ publico.js
    ├─ server.js
    └─ styles
       ├─ Index.css

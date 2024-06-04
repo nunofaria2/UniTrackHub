@@ -1,14 +1,109 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model disciplinas {
+  id_disciplina            Int                        @id
+  Nome                     String?                    @db.VarChar(255)
+  Numero                   Int?
+  id_professor             Int?
+  professores              professores?               @relation(fields: [id_professor], references: [id_professor], onDelete: Restrict, onUpdate: Restrict, map: "disciplinas_ibfk_1")
+  disciplinas_horarios     disciplinas_horarios[]
+  disciplinas_professores  disciplinas_professores[]
+  disciplinas_utilizadores disciplinas_utilizadores[]
+
+  @@index([id_professor], map: "id_professor")
+}
+
+model disciplinas_horarios {
+  id_disciplina Int
+  id_horario    Int
+  disciplinas   disciplinas @relation(fields: [id_disciplina], references: [id_disciplina], onUpdate: Restrict, map: "disciplinas_horarios_ibfk_1")
+  horarios      horarios    @relation(fields: [id_horario], references: [id_horario], onUpdate: Restrict, map: "disciplinas_horarios_ibfk_2")
+
+  @@id([id_disciplina, id_horario])
+  @@index([id_horario], map: "id_horario")
+}
+
+model disciplinas_professores {
+  id_disciplina Int
+  id_professor  Int
+  disciplinas   disciplinas @relation(fields: [id_disciplina], references: [id_disciplina], onUpdate: Restrict, map: "disciplinas_professores_ibfk_1")
+  professores   professores @relation(fields: [id_professor], references: [id_professor], onUpdate: Restrict, map: "disciplinas_professores_ibfk_2")
+
+  @@id([id_disciplina, id_professor])
+  @@index([id_professor], map: "id_professor")
+}
+
+model disciplinas_utilizadores {
+  id_disciplina Int
+  id_utilizador Int
+  disciplinas   disciplinas  @relation(fields: [id_disciplina], references: [id_disciplina], onUpdate: Restrict, map: "disciplinas_utilizadores_ibfk_1")
+  utilizadores  utilizadores @relation(fields: [id_utilizador], references: [id_utilizador], onUpdate: Restrict, map: "disciplinas_utilizadores_ibfk_2")
+
+  @@id([id_disciplina, id_utilizador])
+  @@index([id_utilizador], map: "id_utilizador")
+}
+
+model horarios {
+  id_horario           Int                    @id
+  Data_inicio          DateTime?              @db.Date
+  Data_fim             DateTime?              @db.Date
+  id_utilizador        Int?
+  id_sala              Int?
+  disciplinas_horarios disciplinas_horarios[]
+  utilizadores         utilizadores?          @relation(fields: [id_utilizador], references: [id_utilizador], onDelete: Restrict, onUpdate: Restrict, map: "horarios_ibfk_1")
+  salas                salas?                 @relation(fields: [id_sala], references: [id_sala], onDelete: Restrict, onUpdate: Restrict, map: "horarios_ibfk_2")
+  salas_horarios       salas_horarios[]
+
+  @@index([id_sala], map: "id_sala")
+  @@index([id_utilizador], map: "id_utilizador")
+}
+
+model professores {
+  id_professor            Int                       @id
+  Nome                    String?                   @db.VarChar(255)
+  Email                   String?                   @db.VarChar(255)
+  Carga                   Int?
+  Descricao               String?                   @db.Text
+  disciplinas             disciplinas[]
+  disciplinas_professores disciplinas_professores[]
+}
+
+model salas {
+  id_sala        Int              @id
+  Detalhe        String?          @db.VarChar(255)
+  horarios       horarios[]
+  salas_horarios salas_horarios[]
+}
+
+model salas_horarios {
+  id_sala    Int
+  id_horario Int
+  salas      salas    @relation(fields: [id_sala], references: [id_sala], onUpdate: Restrict, map: "salas_horarios_ibfk_1")
+  horarios   horarios @relation(fields: [id_horario], references: [id_horario], onUpdate: Restrict, map: "salas_horarios_ibfk_2")
+
+  @@id([id_sala, id_horario])
+  @@index([id_horario], map: "id_horario")
+}
+
+model semestres {
+  id_semestre Int     @id
+  Semestre    String? @db.VarChar(20)
+}
+
+model utilizadores {
+  id_utilizador            Int                        @id @default(autoincrement())
+  Nome                     String?                    @db.VarChar(255)
+  Email                    String?                    @db.VarChar(255)
+  Dia_semana               String?                    @db.VarChar(20)
+  Hora_Inicio              DateTime?                  @db.Time(0)
+  Hora_Fim                 DateTime?                  @db.Time(0)
+  disciplinas_utilizadores disciplinas_utilizadores[]
+  horarios                 horarios[]
 }

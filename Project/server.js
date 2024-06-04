@@ -4,7 +4,7 @@ const cors = require('cors');
 const express = require('express');
 
 const publicoRouter = require('./routes/publico');
-//const routerMsql = require('./routes/msql');
+const routerMsql = require('./routes/msql/userRoute');
 const privadoRouter = require('./routes/privado');
 
 const app = express();
@@ -12,8 +12,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/api/', publicoRouter);
+app.use('/api/msql/', routerMsql);
 app.use('/pri/', privadoRouter);  
-//app.use('/api/msql', routerMsql);  
 
 const port = process.env.SERVER_PORT || 8080;
 app.listen(port, () => {

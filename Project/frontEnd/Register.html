@@ -60,13 +60,30 @@
 
     <script>
         function realizarRegister() {
-            var name = document.getElementById('name').value;
-            var email = document.getElementById('username').value;
-            var password = document.getElementById('password').value;
+          var nome = document.getElementById('nome').value;
+          var email = document.getElementById('email').value;
     
-            window.location.href = "Main.html";
+        
+          fetch('/api/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              nome: nome, 
+              email: email, 
+            }),
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Success:', data);
+            window.location.href = "main";
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
         }
-    </script>
+        </script>
 
 </body>
 </html>
