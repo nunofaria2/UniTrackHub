@@ -18,7 +18,6 @@ UniTrackHub
    │  ├─ Index.html
    │  ├─ Login.html
    │  └─ Register.html
-   ├─ Login.html
    ├─ package-lock.json
    ├─ package.json
    ├─ README.md
