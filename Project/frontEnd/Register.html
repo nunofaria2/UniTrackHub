@@ -21,6 +21,8 @@
         </div>
     </header>
 
+    <br><br><br><br><br>
+
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -29,21 +31,28 @@
                         <h4>Register</h4>
                     </div>
                     <div class="card-body">
-                        <form id="registrationForm">
+                        <form id="registerForm">
                             <div class="form-group">
-                                <label for="name">Nome:</label>
-                                <input type="text" class="form-control" id="name" name="name">
+                                <label for="name">Name:</label>
+                                <input type="text" id="name" name="name" class="form-control" required>
                             </div>
+
                             <div class="form-group">
                                 <label for="email">Email:</label>
-                                <input type="text" class="form-control" id="email" name="email">
+                                <input type="email" id="email" name="email" class="form-control" required>
                             </div>
+
                             <div class="form-group">
-                                <label for="password">Passe:</label>
-                                <input type="passe" class="form-control" id="passe" name="password">
+                                <label for="password">Password:</label>
+                                <input type="password" id="password" name="password" class="form-control" required>
                             </div>
-                            <button type="button" class="btn btn-dark btn-block" onclick="realizarRegister()">Register</button>
+                            
+                            <button type="submit" class="btn btn-dark btn-block">Register</button>
                         </form>
+                    </div>
+                    <div class="card-footer text-center">
+                        <p>Já tem uma conta? <a href="Login.html">Login</a></p>
+                        <p>Esqueceu-se da sua senha? <a href="ForgotPass.html">Recuperar Senha</a></p>
                     </div>
                 </div>
             </div>
@@ -54,32 +63,35 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
     <script>
-        function realizarRegister() {
-            const nome = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const passe = document.getElementById('password').value;
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
 
-            fetch('/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    nome: nome,
-                    email: email,
-                    passe: passe,
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                // Redirecionar para a página principal após o registo
-                window.location.href = "main";
-            })
-            .catch(error => {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/msql/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ nome: name, email: email, passe: password }),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('User registered successfully');
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.message);
+                }
+            } catch (error) {
                 console.error('Error:', error);
-            });
-        }
+                alert('Error registering user');
+            }
+        });
     </script>
+
 </body>
 </html>

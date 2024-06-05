@@ -11,11 +11,11 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use('/api/', publicoRouter);
-app.use('/api/msql/', routerMsql);
-app.use('/pri/', privadoRouter);
+app.use('/api/public', publicoRouter);
+app.use('/api/msql', routerMsql);
+app.use('/api/priv', privadoRouter);
 
 const port = process.env.SERVER_PORT || 8080;
 app.listen(port, () => {
-    console.log('Express server listening on port', port);
+    console.log(`Express server listening on port ${port}`);
 });
