@@ -91,7 +91,7 @@ model salas_horarios {
 model utilizadores {
   id_utilizador            Int                        @id @default(autoincrement())
   Nome                     String?                    @db.VarChar(255)
-  Email                    String?                    @db.VarChar(255)
+  Email                    String?                    @unique @db.VarChar(255)
   Passe                    String?                    @db.VarChar(20)
   disciplinas_utilizadores disciplinas_utilizadores[]
   horarios                 horarios[]

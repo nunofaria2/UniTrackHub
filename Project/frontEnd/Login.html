@@ -7,22 +7,14 @@
     <title>Login</title>
 </head>
 <body>
-
     <header class="bg-dark text-white p-4 fixed-top">
-        <!-- Cabeçalho fixo com fundo escuro e texto branco -->
         <div class="container">
-            <!-- Container -->
             <div class="row">
-                <!-- Linha -->
                 <div class="col">
-                    <!-- Coluna -->
                     <h1>UniTrackHub</h1>
-                    <!-- Título do cabeçalho -->
                 </div>
                 <div class="col text-right">
-                    <!-- Coluna alinhada à direita -->
-                    <a href="Index.html" class="btn btn-link text-white">Back</a>
-                    <!-- Link para voltar à página Index -->
+                    <a href="index" class="btn btn-link text-white">Back</a>
                 </div>
             </div>
         </div>
@@ -31,46 +23,30 @@
     <br><br><br><br><br>
 
     <div class="container mt-5">
-        <!-- Container com margem no topo -->
         <div class="row justify-content-center">
-            <!-- Linha centralizada -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-dark text-white text-center">
-                        <!-- Cabeçalho do cartão com fundo escuro, texto branco e centralizado -->
                         <h4>Login</h4>
                     </div>
                     <div class="card-body">
-                        <!-- Corpo do cartão -->
-                        <form method="post" action="">
-                            <!-- Formulário com método POST que envia para "Main.html" -->
+                        <form id="loginForm">
                             <div class="form-group">
-                                <!-- Grupo de formulário -->
-                                <label for="username">Utilizador:</label>
-                                <!-- Campo de utilizador -->
-                                <input type="text" class="form-control" id="username" name="username">
-                                <!-- Campo de entrada de texto para o nome do utilizador -->
+                                <label for="email">Email:</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
                             </div>
 
                             <div class="form-group">
-                                <!-- Outro grupo de formulário -->
                                 <label for="password">Passe:</label>
-                                <!-- Campo da passe -->
-                                <input type="password" class="form-control" id="password" name="password">
-                                <!-- Campo de entrada da passe -->
+                                <input type="password" class="form-control" id="password" name="password" required>
                             </div>
                             
-                            <button type="button" class="btn btn-dark btn-block" onclick="realizarLogin()">Login</button>
-
-                            <!-- Botão de envio com estilo escuro e largura de bloco -->
+                            <button type="submit" class="btn btn-dark btn-block">Login</button>
                         </form>
                     </div>
                     <div class="card-footer text-center">
-                        <!-- Rodapé do cartão com texto centralizado -->
-                        <p>Não tem uma conta? <a href="Register.html">Registar</a></p>
-                        <!-- Texto para registar uma nova conta com link para a pag "Register.html" -->
-                        <p>Esqueceu-se da sua passe? <a href="ForgotPass.html">Recuperar Senha</a></p>
-                        <!-- Texto para recuperar a pass com link para a pag "ForgotPass.html" -->
+                        <p>Não tem uma conta? <a href="register">Registar</a></p>
+                        <p>Esqueceu-se da sua senha? <a href="ForgotPass.html">Recuperar Senha</a></p>
                     </div>
                 </div>
             </div>
@@ -81,12 +57,34 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
     <script>
-        function realizarLogin() {
-            var username = document.getElementById('username').value;
-            var password = document.getElementById('password').value;
-    
-            window.location.href = "Main.html";
-        }
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/msql/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email, passe: password }),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('Login bem-sucedido');
+                    window.location.href = '/api/priv/Main';
+                } else {
+                    const error = await response.json();
+                    alert('Erro: ' + error.message);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao fazer login');
+            }
+        });
     </script>
 </body>
 </html>

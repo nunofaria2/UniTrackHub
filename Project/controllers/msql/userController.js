@@ -9,7 +9,7 @@ exports.register = async (req, res) => {
             data: {
                 Nome: nome,
                 Email: email,
-                Passe: passe,  // Certifique-se de que o campo está corretamente usado
+                Passe: passe,  
             },
         });
 
@@ -17,5 +17,26 @@ exports.register = async (req, res) => {
     } catch (error) {
         console.error('Erro ao registrar o utilizador:', error);
         res.status(500).json({ error: 'Erro ao registrar o utilizador' });
+    }
+};
+
+exports.login = async (req, res) => {
+    const { email, passe } = req.body;
+
+    try {
+        const user = await prisma.utilizadores.findUnique({
+            where: {
+                Email: email,
+            },
+        });
+
+        if (user && user.Passe === passe) {
+            res.status(200).json({ message: 'Login bem-sucedido' });
+        } else {
+            res.status(401).json({ message: 'Credenciais inválidas' });
+        }
+    } catch (error) {
+        console.error('Erro ao fazer login:', error);
+        res.status(500).json({ message: 'Erro ao fazer login' });
     }
 };
