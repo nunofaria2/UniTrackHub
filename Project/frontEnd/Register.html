@@ -31,10 +31,10 @@
                         <h4>Register</h4>
                     </div>
                     <div class="card-body">
-                        <form id="registerForm">
+                        <form id="registerForm" onsubmit="return validaPassword()">
                             <div class="form-group">
-                                <label for="name">Name:</label>
-                                <input type="text" id="name" name="name" class="form-control" required>
+                                <label for="nome">Nome:</label>
+                                <input type="text" id="nome" name="nome" class="form-control" required>
                             </div>
 
                             <div class="form-group">
@@ -43,8 +43,13 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="password">Password:</label>
-                                <input type="password" id="password" name="password" class="form-control" required>
+                                <label for="pswd">Password:</label>
+                                <input type="password" id="pswd" name="password" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="coPwd">Confirmação da Password:</label>
+                                <input type="password" id="coPwd" name="coPwd" class="form-control" required>
                             </div>
                             
                             <button type="submit" class="btn btn-dark btn-block">Register</button>
@@ -62,36 +67,53 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-    <script>
-        document.getElementById('registerForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
+    <script type="text/JavaScript">
+        async function novoUser() {
+            var dados = {
+                email: document.getElementById("email").value,
+                nome: document.getElementById("nome").value,
+                password: document.getElementById("pswd").value,
+                isAdmin: false,
+            };
+            console.log(dados);
             try {
-                const response = await fetch('/api/msql/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ nome: name, email: email, passe: password }),
+                const response = await fetch("http://localhost:4242/api/msql/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(dados),
                 });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    alert('User registered successfully');
-                } else {
-                    const error = await response.json();
-                    alert('Error: ' + error.message);
+    
+                if (!response.ok) {
+                    throw new Error("Erro ao obter os dados");
                 }
+    
+                const data = await response.json();
+                alert("O " + dados.nome + " foi adicionado com sucesso!");
+                window.location.replace("Login.html"); // Redireciona para a página de login
             } catch (error) {
-                console.error('Error:', error);
-                alert('Error registering user');
+                alert("Houve um erro: " + error.message);
             }
-        });
+        }
+    
+        function validaPassword(event) {
+            var password1 = document.getElementById("pswd").value;
+            var password2 = document.getElementById("coPwd").value;
+    
+            // Validate through RegularExpression
+            var passwordcheck1 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+    
+            if (!passwordcheck1.test(password1)) {
+                alert("Password inválida");
+                return false;
+            }
+            if (password1 !== password2) {
+                alert("A password e a confirmação não são iguais");
+                return false;
+            }
+            novoUser();
+            event.preventDefault(); // Impede o envio padrão do formulário
+            return true;
+        }
     </script>
-
 </body>
 </html>

@@ -93,6 +93,7 @@ model utilizadores {
   Nome                     String?                    @db.VarChar(255)
   Email                    String?                    @unique @db.VarChar(255)
   Passe                    String?                    @db.VarChar(20)
+  isAdmin                  Boolean                    @default(false)
   disciplinas_utilizadores disciplinas_utilizadores[]
   horarios                 horarios[]
 }
