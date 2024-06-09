@@ -31,7 +31,7 @@
                     </div>
                     <div class="card-body">
                         <!-- Corrigido método do formulário para POST -->
-                        <form id="loginForm" onsubmit="return validaLogin()" method="POST">
+                        <form id="loginForm" onsubmit="return validaLogin(event)" method="POST">
 
                             <div class="form-group">
                                 <label for="email">Email:</label>
@@ -60,33 +60,31 @@
 
     <script type="text/JavaScript">
         // Função para validar o login
-        const validaLogin = async () => {
-          var dados = {
-            email: document.getElementById("email").value,
-            password: document.getElementById("pswd").value,
-          };
-          const response= await fetch("http://localhost:4242/api/msql/userRoute/login", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(dados),
-          })
-          console.log(response.ok);
-          dados= await  response.json()
-          if(!response.ok){
-            alert("Erro ao fazer login");
-          }
-          else{
-            alert("Login efetuado com sucesso");
-            console.log(dados);
-            // Guardar o token no local storage
-            localStorage.setItem("token", dados.token);
-            window.location.href = "http://localhost:4242/api/priv/main";
-          }
-      };
+        const validaLogin = async (event) => {
+            event.preventDefault(); // Prevenir o envio padrão do formulário
+            var dados = {
+                email: document.getElementById("email").value,
+                password: document.getElementById("pswd").value,
+            };
+            const response = await fetch("http://localhost:4242/api/msql/login", { // URL corrigida
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(dados),
+            });
+            console.log(response.ok);
+            dados = await response.json();
+            if (!response.ok) {
+                alert("Erro ao fazer login");
+            } else {
+                alert("Login efetuado com sucesso");
+                console.log(dados);
+                // Guardar o token no local storage
+                localStorage.setItem("token", dados.token);
+                window.location.href = "http://localhost:4242/api/priv/main";
+            }
+        };
     </script>
-    
-
 </body>
 </html>

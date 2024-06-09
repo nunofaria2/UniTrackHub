@@ -15,7 +15,7 @@ app.use('/api/public', publicoRouter);
 app.use('/api/msql', routerMsql);
 app.use('/api/priv', privadoRouter);
 
-const port = process.env.SERVER_PORT || 8080;
+const port = process.env.SERVER_PORT || 4242;
 app.listen(port, () => {
     console.log(`Express server listening on port ${port}`);
 });
