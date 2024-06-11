@@ -6,6 +6,7 @@ const session = require('express-session');
 
 const publicoRouter = require('./routes/publico');
 const routerMsql = require('./routes/msql/userRoute');
+const routerMsqlTurma = require('./routes/msql/turmaRoute');
 const privadoRouter = require('./routes/privado');
 
 const app = express();
@@ -22,6 +23,7 @@ app.use(session({
 
 app.use('/api/public', publicoRouter);
 app.use('/api/msql', routerMsql);
+app.use('/api/msql/turma', routerMsqlTurma);
 app.use('/api/priv', privadoRouter);
 
 const port = process.env.SERVER_PORT || 4242;

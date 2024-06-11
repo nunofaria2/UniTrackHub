@@ -20,4 +20,9 @@ router.get('/userCRUD', isLoggedIn, checkAdmin, (req, res) => {
     res.sendFile(path.join(__dirname, '../backOffice/userCRUD.html'));
 });
 
+router.get('/turmaCRUD', isLoggedIn, checkAdmin, (req, res) => {
+    res.sendFile(path.join(__dirname, '../backOffice/turmaCRUD.html'));
+});
+
+
 module.exports = router;
