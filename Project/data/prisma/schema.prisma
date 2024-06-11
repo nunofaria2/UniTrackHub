@@ -7,84 +7,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model disciplinas {
-  id_disciplina            Int                        @id
-  Nome                     String?                    @db.VarChar(255)
-  Numero                   Int?
-  id_professor             Int?
-  disciplinas_horarios     disciplinas_horarios[]
-  disciplinas_professores  disciplinas_professores[]
-
-  @@index([id_professor], map: "id_professor")
+model turmas {
+  id_turma    Int           @id @default(autoincrement())
+  NomeTurma   String        @db.VarChar(255)
+  Descricao   String?       @db.Text
+  horarios    horarios[]
+  utilizadores utilizadores[]
 }
-
-model disciplinas_horarios {
-  id_disciplina Int
-  id_horario    Int
-  disciplinas   disciplinas @relation(fields: [id_disciplina], references: [id_disciplina], onUpdate: Restrict, map: "disciplinas_horarios_ibfk_1")
-  horarios      horarios    @relation(fields: [id_horario], references: [id_horario], onUpdate: Restrict, map: "disciplinas_horarios_ibfk_2")
-
-  @@id([id_disciplina, id_horario])
-  @@index([id_horario], map: "id_horario")
-}
-
-model disciplinas_professores {
-  id_disciplina Int
-  id_professor  Int
-  disciplinas   disciplinas @relation(fields: [id_disciplina], references: [id_disciplina], onUpdate: Restrict, map: "disciplinas_professores_ibfk_1")
-  professores   professores @relation(fields: [id_professor], references: [id_professor], onUpdate: Restrict, map: "disciplinas_professores_ibfk_2")
-
-  @@id([id_disciplina, id_professor])
-  @@index([id_professor], map: "id_professor")
-}
-
 
 model horarios {
-  id_horario           Int                    @id
-  Data_inicio          DateTime?              @db.Date
-  Data_fim             DateTime?              @db.Date
-  id_utilizador        Int?
-  id_sala              Int?
-  disciplinas_horarios disciplinas_horarios[]
-  utilizadores         utilizadores?          @relation(fields: [id_utilizador], references: [id_utilizador], onDelete: Restrict, onUpdate: Restrict, map: "horarios_ibfk_1")
-  salas_horarios       salas_horarios[]
-
-  @@index([id_sala], map: "id_sala")
-  @@index([id_utilizador], map: "id_utilizador")
-}
-
-model professores {
-  id_professor            Int                       @id
-  Nome                    String?                   @db.VarChar(255)
-  Email                   String?                   @db.VarChar(255)
-  Carga                   Int?
-  Descricao               String?                   @db.Text
-  disciplinas_professores disciplinas_professores[]
-}
-
-model salas {
-  id_sala        Int              @id
-  Detalhe        String?          @db.VarChar(255)
-  salas_horarios salas_horarios[]
-}
-
-model salas_horarios {
-  id_sala    Int
-  id_horario Int
-  salas      salas    @relation(fields: [id_sala], references: [id_sala], onUpdate: Restrict, map: "salas_horarios_ibfk_1")
-  horarios   horarios @relation(fields: [id_horario], references: [id_horario], onUpdate: Restrict, map: "salas_horarios_ibfk_2")
-
-  @@id([id_sala, id_horario])
-  @@index([id_horario], map: "id_horario")
+  id_horario Int       @id @default(autoincrement())
+  Data_inicio DateTime? @db.Date
+  Data_fim    DateTime? @db.Date
+  id_turma    Int
+  turma       turmas    @relation(fields: [id_turma], references: [id_turma])
 }
 
 model utilizadores {
-  id_utilizador            Int                        @id @default(autoincrement())
-  Nome                     String?                    @db.VarChar(255)
-  Email                    String?                    @unique @db.VarChar(255)
-  Passe                    String?                    @db.VarChar(255)
-  isAdmin                  Boolean                    @default(false)
-  curso                    String?                    @db.VarChar(255) 
-  turma                    String?                    @db.VarChar(255)
-  horarios                 horarios[]
+  id_utilizador Int       @id @default(autoincrement())
+  Nome          String?   @db.VarChar(255)
+  Email         String?   @unique @db.VarChar(255)
+  Passe         String?   @db.VarChar(255)
+  isAdmin       Boolean   @default(false)
+  id_turma      Int?
+  turmas        turmas?   @relation(fields: [id_turma], references: [id_turma])
 }
