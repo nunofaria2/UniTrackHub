@@ -1,81 +1,145 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 
 exports.signin = async (req, res) => {
     const { email, password } = req.body;
 
+    console.log('Tentativa de login com email:', email);
+
     try {
-        console.log('Tentativa de login com email:', email);
         const user = await prisma.utilizadores.findUnique({
             where: { Email: email }
         });
 
         if (!user) {
-            console.log('Usuário não encontrado');
-            return res.status(404).json({ message: 'Usuário não encontrado' });
+            console.log('Utilizador não encontrado');
+            return res.status(404).json({ message: 'Utilizador não encontrado' });
         }
 
-        console.log('Usuário encontrado:', user);
+        console.log('Utilizador encontrado:', user);
 
-        console.log('Senha fornecida:', password);
-        console.log('Senha armazenada:', user.Passe);
+        const passwordIsValid = bcrypt.compareSync(password, user.Passe);
 
-        const isMatch = await bcrypt.compare(password, user.Passe);
-        if (!isMatch) {
+        if (!passwordIsValid) {
             console.log('Senha inválida');
             return res.status(401).json({ message: 'Senha inválida' });
         }
 
-        const token = jwt.sign({ userId: user.id_utilizador }, process.env.JWT_SECRET, { expiresIn: '1h' });
         console.log('Login bem-sucedido');
-
-        res.json({ token });
-    } catch (err) {
-        console.error('Erro no servidor:', err);
-        res.status(500).json({ message: 'Erro no servidor' });
+        req.session.user = user;
+        res.status(200).json({ message: 'Login bem-sucedido' });
+    } catch (error) {
+        console.log('Erro ao tentar fazer login:', error.message);
+        res.status(500).send('Internal Server Error');
     }
 };
 
 exports.signup = async (req, res) => {
+    const { name, email, password, isAdmin } = req.body;
+    const hashedPassword = bcrypt.hashSync(password, 8);
+
     try {
-        const { nome, email, password, isAdmin } = req.body;
-        console.log(req.body); // Exibe os dados recebidos
-
-        const hashedPassword = bcrypt.hashSync(password, 8);
-        console.log('Senha encriptada:', hashedPassword);
-
         const newUser = await prisma.utilizadores.create({
             data: {
                 Email: email,
-                Nome: nome,
+                Nome: name,
                 Passe: hashedPassword,
-                isAdmin: isAdmin || false
+                isAdmin: isAdmin || false  // Se isAdmin não for passado, será false
             },
         });
-        return res.status(200).json({ nome: newUser.Nome, msg: "Utilizador criado com sucesso!" });
+        res.status(200).json({ nome: newUser.Nome, msg: "Utilizador criado com sucesso!" });
     } catch (error) {
-        console.error('Erro ao criar usuário:', error);
         res.status(500).json({ msg: error.message });
     }
 };
 
-/*exports.readToken= async (req, res) =>{
-    try{
-        const { token } = req.body;
-        authenticateUtil.certifyAccessToken(token)
-         .then(decode => {
-            res.status(200).json(decode);
-// Aqui pode ler os dados decodificados do token
-            // Faça o que quiser com os dados decodificados, como salvá-los em variáveis ou usar em outras operações
-          })
-          .catch(err => {
-            res.status(401).json(err);
-            //console.error('Erro ao verificar o token:', err);
-          });
-    }catch(error){
-        res.status(401).json({ msg: error.message })
-    }
-}*/
+exports.logout = (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).json({ message: 'Erro ao fazer logout' });
+        }
+        res.json({ message: 'Logout bem-sucedido' });
+    });
+};
 
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await prisma.utilizadores.findMany();
+        res.json(users);
+    } catch (error) {
+        console.error('Erro ao buscar utilizadores:', error.message);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+exports.getUserById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const user = await prisma.utilizadores.findUnique({
+            where: { id_utilizador: parseInt(id, 10) }
+        });
+        if (!user) {
+            return res.status(404).json({ message: 'Utilizador não encontrado' });
+        }
+        res.json(user);
+    } catch (error) {
+        console.error('Erro ao buscar utilizador por ID:', error.message);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+exports.createUser = async (req, res) => {
+    const { name, email, password, isAdmin } = req.body;
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = await prisma.utilizadores.create({
+            data: {
+                Nome: name,
+                Email: email,
+                Passe: hashedPassword,
+                isAdmin: isAdmin || false  // Se isAdmin não for passado, será false
+            }
+        });
+        res.status(201).json(newUser);
+    } catch (error) {
+        console.error('Erro ao criar utilizador:', error.message);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+exports.updateUser = async (req, res) => {
+    const { id } = req.params;
+    const { name, email, password, isAdmin } = req.body;
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const updatedUser = await prisma.utilizadores.update({
+            where: { id_utilizador: parseInt(id, 10) },
+            data: {
+                Nome: name,
+                Email: email,
+                Passe: hashedPassword,
+                isAdmin: isAdmin || false  // Se isAdmin não for passado, será false
+            }
+        });
+        res.json(updatedUser);
+    } catch (error) {
+        console.error('Erro ao atualizar utilizador:', error.message);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const deletedUser = await prisma.utilizadores.delete({
+            where: {
+                id_utilizador: parseInt(id)
+            }
+        });
+        res.json({ message: 'Utilizador eliminado com sucesso' });
+    } catch (error) {
+        console.error('Erro ao eliminar utilizador:', error.message);
+        res.status(500).send('Internal Server Error');
+    }
+};

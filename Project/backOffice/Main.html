@@ -127,31 +127,17 @@
 
 
     <script>
-       /* document.getElementById("acessarPaginaProtegida").addEventListener("click", () => {
-           const token = localStorage.getItem("token");
-           fetch("/api/priv/main", {  // Endpoint correto para /priv/main
-             method: "GET",
-             headers: {
-               Authorization: `Bearer ${token}`,
-             },
-           })
-             .then((response) => {
-               if (response.ok) {
-                 return response.text(); // Ou response.json() se a resposta for JSON
-               } else {
-                 throw new Error("Falha ao acessar a página protegida");
-               }
-             })
-             .then((data) => {
-                // Renderize a resposta de forma controlada, não use document.write(data)
-                console.log(data); // Exibe a resposta no console para debug
-              })
-              .catch((error) => {
-                console.error(error);
-                alert("Erro ao acessar a página protegida. Por favor, faça login.");
-                // Redirecionar o usuário para a página de login ou fazer outra ação apropriada
-              });
-          });*/
+        async function logout() {
+            const response = await fetch('/api/msql/logout', {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                window.location.href = '/api/public/login';
+            } else {
+                alert('Logout falhou');
+            }
+        }
         </script>
         
 </body>

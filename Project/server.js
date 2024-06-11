@@ -1,7 +1,8 @@
 require('dotenv').config();
+const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const express = require('express');
+const session = require('express-session');
 
 const publicoRouter = require('./routes/publico');
 const routerMsql = require('./routes/msql/userRoute');
@@ -10,6 +11,14 @@ const privadoRouter = require('./routes/privado');
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
+
+// Configurar sessões
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'default_secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } // Em produção, use true se estiver usando HTTPS
+}));
 
 app.use('/api/public', publicoRouter);
 app.use('/api/msql', routerMsql);

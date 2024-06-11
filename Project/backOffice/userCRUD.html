@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Utilizadores</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<header class="bg-dark text-white p-4 fixed-top">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>UniTrackHub</h1>
+            </div>
+            <div class="col text-right">
+                <a href="index" class="btn btn-link text-white">Back</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container mt-5">
+    <h1 class="mb-4">CRUD Utilizadores</h1>
+
+    <!-- Formulário para criar um novo utilizador -->
+    <h2>Criar Utilizador</h2>
+    <form id="createUserForm" class="mb-4">
+        <div class="form-group">
+            <label for="createName">Nome:</label>
+            <input type="text" class="form-control" id="createName" required>
+        </div>
+        <div class="form-group">
+            <label for="createEmail">Email:</label>
+            <input type="email" class="form-control" id="createEmail" required>
+        </div>
+        <div class="form-group">
+            <label for="createPassword">Senha:</label>
+            <input type="password" class="form-control" id="createPassword" required>
+        </div>
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="createIsAdmin">
+            <label class="form-check-label" for="createIsAdmin">Admin</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Criar Utilizador</button>
+    </form>
+
+    <!-- Tabela para listar utilizadores -->
+    <h2>Lista de Utilizadores</h2>
+    <table class="table table-bordered" id="usersTable">
+        <thead class="thead-light">
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Admin</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <!-- Formulário para atualizar um utilizador -->
+    <h2>Atualizar Utilizador</h2>
+    <form id="updateUserForm" class="mb-4" style="display: none;">
+        <input type="hidden" id="updateUserId">
+        <div class="form-group">
+            <label for="updateName">Nome:</label>
+            <input type="text" class="form-control" id="updateName" required>
+        </div>
+        <div class="form-group">
+            <label for="updateEmail">Email:</label>
+            <input type="email" class="form-control" id="updateEmail" required>
+        </div>
+        <div class="form-group">
+            <label for="updatePassword">Senha:</label>
+            <input type="password" class="form-control" id="updatePassword" required>
+        </div>
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="updateIsAdmin">
+            <label class="form-check-label" for="updateIsAdmin">Admin</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Atualizar Utilizador</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const usersTable = document.getElementById('usersTable').querySelector('tbody');
+        const createUserForm = document.getElementById('createUserForm');
+        const updateUserForm = document.getElementById('updateUserForm');
+
+        // Função para buscar utilizadores
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch('http://localhost:4242/api/msql/getAllUsers', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                const users = await response.json();
+                usersTable.innerHTML = '';
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.id_utilizador}</td>
+                        <td>${user.Nome}</td>
+                        <td>${user.Email}</td>
+                        <td>${user.isAdmin ? 'Sim' : 'Não'}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="editUser(${user.id_utilizador}, '${user.Nome}', '${user.Email}', ${user.isAdmin})">Editar</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id_utilizador})">Excluir</button>
+                        </td>
+                    `;
+                    usersTable.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Erro ao buscar utilizadores:', error.message);
+                showAlert('Erro ao buscar utilizadores', 'danger');
+            }
+        };
+
+        // Função para criar um utilizador
+        createUserForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const name = document.getElementById('createName').value;
+            const email = document.getElementById('createEmail').value;
+            const password = document.getElementById('createPassword').value;
+            const isAdmin = document.getElementById('createIsAdmin').checked;
+            try {
+                const response = await fetch('http://localhost:4242/api/msql/createUser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, password, isAdmin }),
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    throw new Error('Erro ao criar utilizador');
+                }
+                fetchUsers();
+                createUserForm.reset();
+            } catch (error) {
+                console.error('Erro ao criar utilizador:', error.message);
+                showAlert('Erro ao criar utilizador', 'danger');
+            }
+        });
+
+        // Função para atualizar um utilizador
+        updateUserForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const id = document.getElementById('updateUserId').value;
+            const name = document.getElementById('updateName').value;
+            const email = document.getElementById('updateEmail').value;
+            const password = document.getElementById('updatePassword').value;
+            const isAdmin = document.getElementById('updateIsAdmin').checked;
+            try {
+                const response = await fetch(`http://localhost:4242/api/msql/updateUser/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, password, isAdmin }),
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    throw new Error('Erro ao atualizar utilizador');
+                }
+                fetchUsers();
+                updateUserForm.style.display = 'none';
+            } catch (error) {
+                console.error('Erro ao atualizar utilizador:', error.message);
+                showAlert('Erro ao atualizar utilizador', 'danger');
+            }
+        });
+
+        // Função para excluir um utilizador
+        window.deleteUser = async (id) => {
+            try {
+                const response = await fetch(`http://localhost:4242/api/msql/deleteUser/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    throw new Error('Erro ao excluir utilizador');
+                }
+                fetchUsers();
+            } catch (error) {
+                console.error('Erro ao excluir utilizador:', error.message);
+                showAlert('Erro ao excluir utilizador', 'danger');
+            }
+        };
+
+        // Função para editar um utilizador
+        window.editUser = (id, name, email, isAdmin) => {
+            document.getElementById('updateUserId').value = id;
+            document.getElementById('updateName').value = name;
+            document.getElementById('updateEmail').value = email;
+            document.getElementById('updatePassword').value = '';
+            document.getElementById('updateIsAdmin').checked = isAdmin;
+            updateUserForm.style.display = 'block';
+        };
+
+        // Função para exibir alertas
+        const showAlert = (message, type) => {
+            const alertBox = document.createElement('div');
+            alertBox.classList.add('alert', `alert-${type}`, 'alert-dismissible', 'fade', 'show');
+            alertBox.setAttribute('role', 'alert');
+            alertBox.innerHTML = `
+                <strong>${message}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>`;
+            document.body.appendChild(alertBox);
+            setTimeout(() => {
+                alertBox.remove();
+            }, 5000);
+        };
+
+        fetchUsers();
+    });
+</script>
+
+</body>
+</html>

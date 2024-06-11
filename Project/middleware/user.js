@@ -1,21 +1,14 @@
 const authenticateUtil = require('../utils/authenticate.js');
 
-module.exports.verificarToken = async (req, res, next) => {
-    const accessToken = req.headers['authorization'];
-
-    if (!accessToken) {
-        return res.status(401).send("Não está autorizado");
-    }
-
-    try {
-        const bearer = accessToken.split(' ');
-        const bearerToken = bearer[1];
-
-        const result = await authenticateUtil.certifyAccessToken(bearerToken);
-        req.body.loggedUserName = result.Nome;
-
+// middleware/user.js
+const isLoggedIn = (req, res, next) => {
+    if (req.session.user) {
         return next();
-    } catch (err) {
-        return res.status(401).send("Não está autorizado");
+    } else {
+        res.status(401).send('Não autorizado. Por favor, faça login.');
     }
 };
+
+module.exports = isLoggedIn;
+
+
