@@ -61,7 +61,7 @@ exports.signup = async (req, res) => {
     }
 };
 
-exports.readToken= async (req, res) =>{
+/*exports.readToken= async (req, res) =>{
     try{
         const { token } = req.body;
         authenticateUtil.certifyAccessToken(token)
@@ -77,5 +77,5 @@ exports.readToken= async (req, res) =>{
     }catch(error){
         res.status(401).json({ msg: error.message })
     }
-}
+}*/
 
