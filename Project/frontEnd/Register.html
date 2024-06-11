@@ -31,10 +31,10 @@
                         <h4>Register</h4>
                     </div>
                     <div class="card-body">
-                        <form id="registerForm" onsubmit="return validaPassword()">
+                        <form id="registerForm" onsubmit="return validaPassword(event)">
                             <div class="form-group">
                                 <label for="nome">Nome:</label>
-                                <input type="text" id="nome" name="nome" class="form-control" required>
+                                <input type="text" id="nome" name="name" class="form-control" required>
                             </div>
 
                             <div class="form-group">
@@ -71,37 +71,39 @@
         async function novoUser() {
             var dados = {
                 email: document.getElementById("email").value,
-                nome: document.getElementById("nome").value,
+                name: document.getElementById("nome").value,
                 password: document.getElementById("pswd").value,
                 isAdmin: false,
             };
             console.log(dados);
             try {
-                const response = await fetch("http://localhost:4242/api/msql/register", {
+                const response = await fetch("http://localhost:4242/api/msql/signup", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(dados),
                 });
-    
+
                 if (!response.ok) {
                     throw new Error("Erro ao obter os dados");
                 }
-    
+
                 const data = await response.json();
-                alert("O " + dados.nome + " foi adicionado com sucesso!");
-                window.location.replace("Login.html"); // Redireciona para a página de login
+                alert("O " + dados.name + " foi adicionado com sucesso!");
+                window.location.replace("main"); // Redireciona para a página de login
             } catch (error) {
                 alert("Houve um erro: " + error.message);
             }
         }
-    
+
         function validaPassword(event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+
             var password1 = document.getElementById("pswd").value;
             var password2 = document.getElementById("coPwd").value;
-    
+
             // Validate through RegularExpression
             var passwordcheck1 = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
-    
+
             if (!passwordcheck1.test(password1)) {
                 alert("Password inválida");
                 return false;
@@ -110,8 +112,8 @@
                 alert("A password e a confirmação não são iguais");
                 return false;
             }
-            novoUser();
-            event.preventDefault(); // Impede o envio padrão do formulário
+
+            novoUser(); // Chama a função para registrar o novo usuário
             return true;
         }
     </script>

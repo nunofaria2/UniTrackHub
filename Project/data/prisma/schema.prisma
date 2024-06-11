@@ -14,7 +14,6 @@ model disciplinas {
   id_professor             Int?
   disciplinas_horarios     disciplinas_horarios[]
   disciplinas_professores  disciplinas_professores[]
-  disciplinas_utilizadores disciplinas_utilizadores[]
 
   @@index([id_professor], map: "id_professor")
 }
@@ -39,15 +38,6 @@ model disciplinas_professores {
   @@index([id_professor], map: "id_professor")
 }
 
-model disciplinas_utilizadores {
-  id_disciplina Int
-  id_utilizador Int
-  disciplinas   disciplinas  @relation(fields: [id_disciplina], references: [id_disciplina], onUpdate: Restrict, map: "disciplinas_utilizadores_ibfk_1")
-  utilizadores  utilizadores @relation(fields: [id_utilizador], references: [id_utilizador], onUpdate: Restrict, map: "disciplinas_utilizadores_ibfk_2")
-
-  @@id([id_disciplina, id_utilizador])
-  @@index([id_utilizador], map: "id_utilizador")
-}
 
 model horarios {
   id_horario           Int                    @id
@@ -94,6 +84,7 @@ model utilizadores {
   Email                    String?                    @unique @db.VarChar(255)
   Passe                    String?                    @db.VarChar(255)
   isAdmin                  Boolean                    @default(false)
-  disciplinas_utilizadores disciplinas_utilizadores[]
+  curso                    String?                    @db.VarChar(255) 
+  turma                    String?                    @db.VarChar(255)
   horarios                 horarios[]
 }

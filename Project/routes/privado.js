@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const isLoggedIn = require('../middleware/user');
+const checkAdmin = require('../middleware/userAdmin');
 const router = express.Router();
 
 router.get('/main', isLoggedIn, (req, res) => {
@@ -15,7 +16,7 @@ router.get('/horarios-turmas', isLoggedIn, (req, res) => {
     res.sendFile(path.join(__dirname, '../backOffice/HorariosTurmas.html'));
 });
 
-router.get('/userCRUD', isLoggedIn, (req, res) => {
+router.get('/userCRUD', isLoggedIn, checkAdmin, (req, res) => {
     res.sendFile(path.join(__dirname, '../backOffice/userCRUD.html'));
 });
 

@@ -45,7 +45,7 @@ exports.signup = async (req, res) => {
                 Email: email,
                 Nome: name,
                 Passe: hashedPassword,
-                isAdmin: isAdmin || false  // Se isAdmin não for passado, será false
+                isAdmin: isAdmin  // Se isAdmin não for passado, será false
             },
         });
         res.status(200).json({ nome: newUser.Nome, msg: "Utilizador criado com sucesso!" });
