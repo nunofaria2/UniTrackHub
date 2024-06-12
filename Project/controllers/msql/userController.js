@@ -36,7 +36,7 @@ exports.signin = async (req, res) => {
 };
 
 exports.signup = async (req, res) => {
-    const { name, email, password, isAdmin } = req.body;
+    const { name, email, password, isAdmin, turmaId } = req.body;
     const hashedPassword = bcrypt.hashSync(password, 8);
 
     try {
@@ -45,7 +45,8 @@ exports.signup = async (req, res) => {
                 Email: email,
                 Nome: name,
                 Passe: hashedPassword,
-                isAdmin: isAdmin  // Se isAdmin não for passado, será false
+                isAdmin: isAdmin || false,  // Se isAdmin não for passado, será false
+                id_turma: parseInt(turmaId, 10),
             },
         });
         res.status(200).json({ nome: newUser.Nome, msg: "Utilizador criado com sucesso!" });
@@ -90,7 +91,7 @@ exports.getUserById = async (req, res) => {
 };
 
 exports.createUser = async (req, res) => {
-    const { name, email, password, isAdmin } = req.body;
+    const { name, email, password, isAdmin, turmaId } = req.body;
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = await prisma.utilizadores.create({
@@ -98,7 +99,8 @@ exports.createUser = async (req, res) => {
                 Nome: name,
                 Email: email,
                 Passe: hashedPassword,
-                isAdmin: isAdmin || false  // Se isAdmin não for passado, será false
+                isAdmin: isAdmin || false,  // Se isAdmin não for passado, será false
+                id_turma: parseInt(turmaId, 10),
             }
         });
         res.status(201).json(newUser);
@@ -110,7 +112,7 @@ exports.createUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     const { id } = req.params;
-    const { name, email, password, isAdmin } = req.body;
+    const { name, email, password, isAdmin, turmaId } = req.body;
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         const updatedUser = await prisma.utilizadores.update({
@@ -119,7 +121,8 @@ exports.updateUser = async (req, res) => {
                 Nome: name,
                 Email: email,
                 Passe: hashedPassword,
-                isAdmin: isAdmin || false  // Se isAdmin não for passado, será false
+                isAdmin: isAdmin || false,  // Se isAdmin não for passado, será false
+                id_turma: parseInt(turmaId, 10),
             }
         });
         res.json(updatedUser);

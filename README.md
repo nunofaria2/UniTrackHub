@@ -11,9 +11,12 @@ UniTrackHub
    │  ├─ Horario.html
    │  ├─ Horario.json
    │  ├─ HorariosTurmas.html
-   │  └─ Main.html
+   │  ├─ Main.html
+   │  ├─ turmaCRUD.html
+   │  └─ userCRUD.html
    ├─ controllers
    │  └─ msql
+   │     ├─ turmaController.js
    │     └─ userController.js
    ├─ data
    │  └─ prisma
@@ -24,6 +27,14 @@ UniTrackHub
    │     │  │  └─ migration.sql
    │     │  ├─ 20240608141514_add_is_admin_to_utilizadores
    │     │  │  └─ migration.sql
+   │     │  ├─ 20240609115443_alterar_tamanho_passe
+   │     │  │  └─ migration.sql
+   │     │  ├─ 20240611175345_curso_turma
+   │     │  │  └─ migration.sql
+   │     │  ├─ 20240611175403_curso_turma
+   │     │  │  └─ migration.sql
+   │     │  ├─ 20240611193751_update_db
+   │     │  │  └─ migration.sql
    │     │  └─ migration_lock.toml
    │     └─ schema.prisma
    ├─ frontEnd
@@ -32,7 +43,8 @@ UniTrackHub
    │  ├─ Login.html
    │  └─ Register.html
    ├─ middleware
-   │  └─ user.js
+   │  ├─ user.js
+   │  └─ userAdmin.js
    ├─ package-lock.json
    ├─ package.json
    ├─ prisma
@@ -41,6 +53,7 @@ UniTrackHub
    ├─ routes
    │  ├─ msql
    │  │  ├─ index.js
+   │  │  ├─ turmaRoute.js
    │  │  └─ userRoute.js
    │  ├─ privado.js
    │  └─ publico.js

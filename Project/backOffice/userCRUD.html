@@ -39,6 +39,12 @@
             <label for="createPassword">Senha:</label>
             <input type="password" class="form-control" id="createPassword" required>
         </div>
+        <div class="form-group">
+            <label for="createTurma">Turma:</label>
+            <select class="form-control" id="createTurma" required>
+                <!-- Options will be populated dynamically -->
+            </select>
+        </div>
         <div class="form-group form-check">
             <input type="checkbox" class="form-check-input" id="createIsAdmin">
             <label class="form-check-label" for="createIsAdmin">Admin</label>
@@ -55,6 +61,7 @@
             <th>Nome</th>
             <th>Email</th>
             <th>Admin</th>
+            <th>Turma</th>
             <th>Ações</th>
         </tr>
         </thead>
@@ -78,6 +85,12 @@
             <label for="updatePassword">Senha:</label>
             <input type="password" class="form-control" id="updatePassword" required>
         </div>
+        <div class="form-group">
+            <label for="updateTurma">Turma:</label>
+            <select class="form-control" id="updateTurma" required>
+                <!-- Options will be populated dynamically -->
+            </select>
+        </div>
         <div class="form-group form-check">
             <input type="checkbox" class="form-check-input" id="updateIsAdmin">
             <label class="form-check-label" for="updateIsAdmin">Admin</label>
@@ -90,10 +103,43 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
         const usersTable = document.getElementById('usersTable').querySelector('tbody');
         const createUserForm = document.getElementById('createUserForm');
         const updateUserForm = document.getElementById('updateUserForm');
+        const createTurmaSelect = document.getElementById('createTurma');
+        const updateTurmaSelect = document.getElementById('updateTurma');
+
+        // Função para buscar turmas
+        const fetchTurmas = async () => {
+    try {
+        const response = await fetch('http://localhost:4242/api/msql/turma', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        });
+        const turmas = await response.json();
+        createTurmaSelect.innerHTML = '';
+        updateTurmaSelect.innerHTML = '';
+        turmas.forEach(turma => {
+            // Criar opções separadamente para garantir que elas sejam independentes
+            const optionCreate = document.createElement('option');
+            optionCreate.value = turma.id_turma;
+            optionCreate.textContent = turma.NomeTurma;
+            createTurmaSelect.appendChild(optionCreate);
+
+            const optionUpdate = document.createElement('option');
+            optionUpdate.value = turma.id_turma;
+            optionUpdate.textContent = turma.NomeTurma;
+            updateTurmaSelect.appendChild(optionUpdate);
+        });
+    } catch (error) {
+        console.error('Erro ao buscar turmas:', error.message);
+        showAlert('Erro ao buscar turmas', 'danger');
+    }
+};
 
         // Função para buscar utilizadores
         const fetchUsers = async () => {
@@ -114,8 +160,9 @@
                         <td>${user.Nome}</td>
                         <td>${user.Email}</td>
                         <td>${user.isAdmin ? 'Sim' : 'Não'}</td>
+                        <td>${user.id_turma}</td>
                         <td>
-                            <button class="btn btn-warning btn-sm" onclick="editUser(${user.id_utilizador}, '${user.Nome}', '${user.Email}', ${user.isAdmin})">Editar</button>
+                            <button class="btn btn-warning btn-sm" onclick="editUser(${user.id_utilizador}, '${user.Nome}', '${user.Email}', ${user.isAdmin}, ${user.turma ? user.turma.id_turma : null})">Editar</button>
                             <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id_utilizador})">Excluir</button>
                         </td>
                     `;
@@ -127,6 +174,7 @@
             }
         };
 
+
         // Função para criar um utilizador
         createUserForm.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -134,13 +182,14 @@
             const email = document.getElementById('createEmail').value;
             const password = document.getElementById('createPassword').value;
             const isAdmin = document.getElementById('createIsAdmin').checked;
+            const turmaId = document.getElementById('createTurma').value;
             try {
                 const response = await fetch('http://localhost:4242/api/msql/createUser', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ name, email, password, isAdmin }),
+                    body: JSON.stringify({ name, email, password, isAdmin, turmaId }),
                     credentials: 'include'
                 });
                 if (!response.ok) {
@@ -162,13 +211,15 @@
             const email = document.getElementById('updateEmail').value;
             const password = document.getElementById('updatePassword').value;
             const isAdmin = document.getElementById('updateIsAdmin').checked;
+            const turmaId =
+            document.getElementById('updateTurma').value;
             try {
                 const response = await fetch(`http://localhost:4242/api/msql/updateUser/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ name, email, password, isAdmin }),
+                    body: JSON.stringify({ name, email, password, isAdmin, turmaId }),
                     credentials: 'include'
                 });
                 if (!response.ok) {
@@ -200,16 +251,29 @@
         };
 
         // Função para editar um utilizador
-        window.editUser = (id, name, email, isAdmin) => {
+        window.editUser = (id, name, email, isAdmin, turmaId) => {
             document.getElementById('updateUserId').value = id;
             document.getElementById('updateName').value = name;
             document.getElementById('updateEmail').value = email;
             document.getElementById('updatePassword').value = '';
             document.getElementById('updateIsAdmin').checked = isAdmin;
+            document.getElementById('updateTurma').value = turmaId;
             updateUserForm.style.display = 'block';
         };
 
         // Função para exibir alertas
+        const showAlert = (message, type) => {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.appendChild(document.createTextNode(message));
+            const container = document.querySelector('.container');
+            const form = document.querySelector('#createUserForm');
+            container.insertBefore(alert, form);
+
+            setTimeout(() => document.querySelector('.alert').remove(), 3000);
+        };
+
+        fetchTurmas();
         fetchUsers();
     });
 </script>
