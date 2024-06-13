@@ -75,11 +75,18 @@
                                 </div>
                             </div>
                         </div>
-                        <h1>Informação do Aluno</h1>
-                        <p>Nome:</p>
-                        <p>Numero:</p>
-                        <p>Curso:</p>
-                        <p>Turma:</p>
+                        <h2>Lista de Utilizadores</h2>
+                        <table class="table table-bordered" id="usersTable">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Turma</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
 
                         <!-- Modal de Profile -->
                         <div class="modal fade" id="newTaskModal">
@@ -139,6 +146,37 @@
                 alert('Logout falhou');
             }
         }
+
+        // Este código pode ser colocado dentro de uma tag <script> no seu main.html
+        document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch('/api/msql/getLoggedUser', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+            const loggedUser = await response.json();
+            
+            // Criar a tabela e adicionar as informações do utilizador logado
+            const table = document.createElement('table');
+            table.innerHTML = `
+            
+                <tr>
+                    <td>${loggedUser.Nome}</td>
+                    <td>${loggedUser.Email}</td>
+                    <td>${loggedUser.id_turma}</td>
+                </tr>
+            `;
+            document.body.appendChild(table); // Adicione a tabela ao corpo do documento ou a um elemento específico
+        } catch (error) {
+            console.error('Erro ao buscar o utilizador logado:', error.message);
+            // Trate o erro conforme necessário
+        }
+
+        });
+
     </script>
 </body>
 </html>

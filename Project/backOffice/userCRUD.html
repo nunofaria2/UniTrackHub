@@ -60,6 +60,7 @@
             <th>ID</th>
             <th>Nome</th>
             <th>Email</th>
+            <th>Passe</th>
             <th>Admin</th>
             <th>Turma</th>
             <th>Ações</th>
@@ -159,10 +160,11 @@
                         <td>${user.id_utilizador}</td>
                         <td>${user.Nome}</td>
                         <td>${user.Email}</td>
+                        <td>${user.Passe}</td>
                         <td>${user.isAdmin ? 'Sim' : 'Não'}</td>
                         <td>${user.id_turma}</td>
                         <td>
-                            <button class="btn btn-warning btn-sm" onclick="editUser(${user.id_utilizador}, '${user.Nome}', '${user.Email}', ${user.isAdmin}, ${user.turma ? user.turma.id_turma : null})">Editar</button>
+                            <button class="btn btn-warning btn-sm" onclick="editUser(${user.id_utilizador}, '${user.Nome}', '${user.Email}', '${user.Passe}', ${user.isAdmin}, ${user.turma ? user.turma.id_turma : null})">Editar</button>
                             <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id_utilizador})">Excluir</button>
                         </td>
                     `;
@@ -233,22 +235,28 @@
             }
         });
 
-        // Função para excluir um utilizador
         window.deleteUser = async (id) => {
-            try {
-                const response = await fetch(`http://localhost:4242/api/msql/deleteUser/${id}`, {
-                    method: 'DELETE',
-                    credentials: 'include'
-                });
-                if (!response.ok) {
-                    throw new Error('Erro ao excluir utilizador');
-                }
-                fetchUsers();
-            } catch (error) {
-                console.error('Erro ao excluir utilizador:', error.message);
-                showAlert('Erro ao excluir utilizador', 'danger');
+    // Mensagem de confirmação
+    const confirmDelete = confirm('Tem certeza que deseja excluir este utilizador?');
+    if (confirmDelete) {
+        try {
+            const response = await fetch(`http://localhost:4242/api/msql/deleteUser/${id}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+            if (!response.ok) {
+                throw new Error('Erro ao excluir utilizador');
             }
-        };
+            fetchUsers();
+        } catch (error) {
+            console.error('Erro ao excluir utilizador:', error.message);
+            showAlert('Erro ao excluir utilizador', 'danger');
+        }
+    } else {
+        // Se o utilizador clicar em "Cancelar", não faça nada
+        console.log('A exclusão foi cancelada pelo utilizador.');
+    }
+};
 
         // Função para editar um utilizador
         window.editUser = (id, name, email, isAdmin, turmaId) => {

@@ -146,3 +146,16 @@ exports.deleteUser = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
+exports.getLoggedUser = async (req, res) => {
+    try {
+        const userId = req.session.user.id_utilizador; // Ajuste o caminho conforme a estrutura da sua sessão
+        const user = await prisma.utilizadores.findUnique({
+            where: { id_utilizador: userId }
+        });
+        res.json(user);
+    } catch (error) {
+        console.error('Erro ao buscar o utilizador logado:', error.message);
+        res.status(500).send('Internal Server Error');
+    }
+};
