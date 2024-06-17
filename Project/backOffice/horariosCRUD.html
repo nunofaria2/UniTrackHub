@@ -4,40 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
-    <title>Horarios CRUD</title>
+    <title>CRUD Horários</title>
 </head>
 <body>
+    <header class="bg-dark text-white p-4 fixed-top">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h1>UniTrackHub</h1>
+                </div>
+                <div class="col text-right">
+                    <a href="http://localhost:4242/api/public/index" class="btn btn-link text-white">Back</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    
     <div class="container mt-5">
-        <h1>Gerenciar Horários</h1>
-
-        <form id="horarioForm" class="mb-4">
+        <h1>CRUD Horários</h1>
+        
+        <!-- Formulário para Criar/Atualizar Horário -->
+        <form id="horarioForm">
+            <input type="hidden" id="id_horario" name="id_horario">
             <div class="form-group">
-                <label for="Data_inicio">Data Início</label>
-                <input type="datetime-local" class="form-control" id="Data_inicio" required>
+                <label for="Data_inicio">Data de Início:</label>
+                <input type="datetime-local" id="Data_inicio" name="Data_inicio" class="form-control" required>
             </div>
             <div class="form-group">
-                <label for="Data_fim">Data Fim</label>
-                <input type="datetime-local" class="form-control" id="Data_fim" required>
+                <label for="Data_fim">Data de Fim:</label>
+                <input type="datetime-local" id="Data_fim" name="Data_fim" class="form-control" required>
             </div>
             <div class="form-group">
-                <label for="id_turma">ID Turma</label>
-                <input type="number" class="form-control" id="id_turma" required>
+                <label for="id_turma">ID Turma:</label>
+                <input type="number" id="id_turma" name="id_turma" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-primary">Adicionar Horário</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
         </form>
-
-        <table class="table">
+        <div id="responseMessage" class="mt-3"></div>
+        
+        <!-- Lista de Horários -->
+        <h2 class="mt-5">Lista de Horários</h2>
+        <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Data Início</th>
-                    <th>Data Fim</th>
+                    <th>Data de Início</th>
+                    <th>Data de Fim</th>
                     <th>ID Turma</th>
                     <th>Ações</th>
                 </tr>
             </thead>
             <tbody id="horariosTableBody">
-                <!-- Horários serão carregados aqui -->
             </tbody>
         </table>
     </div>
@@ -45,77 +67,97 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('horarioForm');
-            const tableBody = document.getElementById('horariosTableBody');
-    
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const Data_inicio = new Date(document.getElementById('Data_inicio').value).toISOString();
-                const Data_fim = new Date(document.getElementById('Data_fim').value).toISOString();
-                const id_turma = document.getElementById('id_turma').value;
-    
-                try {
-                    const response = await fetch('/api/msql/horarios/createHorario', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ Data_inicio, Data_fim, id_turma })
-                    });
-    
-                    if (response.ok) {
-                        loadHorarios();
-                        form.reset();
-                    } else {
-                        alert('Failed to add horario');
-                    }
-                } catch (error) {
-                    alert('An error occurred while adding horario');
-                }
-            });
-    
-            async function loadHorarios() {
-                try {
-                    const response = await fetch('/api/msql/horarios');
-                    const horarios = await response.json();
-    
-                    tableBody.innerHTML = '';
-                    horarios.forEach(horario => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${horario.id_horario}</td>
-                            <td>${new Date(horario.Data_inicio).toLocaleString()}</td>
-                            <td>${new Date(horario.Data_fim).toLocaleString()}</td>
-                            <td>${horario.id_turma}</td>
-                            <td>
-                                <button class="btn btn-danger btn-sm" onclick="deleteHorario(${horario.id_horario})">Delete</button>
-                            </td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
-                } catch (error) {
-                    alert('Failed to load horarios');
-                }
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadHorarios();
+        });
+
+        async function loadHorarios() {
+            try {
+                const response = await fetch('http://localhost:4242/api/msql/horarios');
+                const horarios = await response.json();
+                const horariosTableBody = document.getElementById('horariosTableBody');
+                horariosTableBody.innerHTML = '';
+
+                horarios.forEach(horario => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${horario.id_horario}</td>
+                        <td>${new Date(horario.Data_inicio).toLocaleString()}</td>
+                        <td>${new Date(horario.Data_fim).toLocaleString()}</td>
+                        <td>${horario.id_turma}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="editHorario(${horario.id_horario})">Editar</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteHorario(${horario.id_horario})">Excluir</button>
+                        </td>
+                    `;
+                    horariosTableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Erro ao listar horários:', error.message);
             }
-    
-            window.deleteHorario = async function(id) {
+        }
+
+        async function editHorario(id_horario) {
+            try {
+                const response = await fetch(`http://localhost:4242/api/msql/horarios/${id_horario}`);
+                const horario = await response.json();
+                document.getElementById('id_horario').value = horario.id_horario;
+                document.getElementById('Data_inicio').value = new Date(horario.Data_inicio).toISOString().slice(0, 16);
+                document.getElementById('Data_fim').value = new Date(horario.Data_fim).toISOString().slice(0, 16);
+                document.getElementById('id_turma').value = horario.id_turma;
+            } catch (error) {
+                console.error('Erro ao listar horário:', error.message);
+            }
+        }
+
+        async function deleteHorario(id_horario) {
+            if (confirm('Tem certeza que deseja excluir este horário?')) {
                 try {
-                    const response = await fetch(`/api/msql/horarios/${id}`, {
+                    const response = await fetch(`http://localhost:4242/api/msql/horarios/${id_horario}`, {
                         method: 'DELETE'
                     });
-    
+
                     if (response.ok) {
-                        loadHorarios();
+                        await loadHorarios();
+                        document.getElementById('responseMessage').innerText = 'Horário excluído com sucesso.';
                     } else {
-                        alert('Failed to delete horario');
+                        document.getElementById('responseMessage').innerText = 'Erro ao excluir horário.';
                     }
                 } catch (error) {
-                    alert('An error occurred while deleting horario');
+                    console.error('Erro ao excluir horário:', error.message);
                 }
             }
-    
-            loadHorarios();
+        }
+
+        document.getElementById('horarioForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const id_horario = document.getElementById('id_horario').value;
+            const Data_inicio = new Date(document.getElementById('Data_inicio').value).toISOString();
+            const Data_fim = new Date(document.getElementById('Data_fim').value).toISOString();
+            const id_turma = document.getElementById('id_turma').value;
+            const method = id_horario ? 'PUT' : 'POST';
+            const url = id_horario ? `http://localhost:4242/api/msql/horarios/${id_horario}` : 'http://localhost:4242/api/msql/horarios/createHorario';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ Data_inicio, Data_fim, id_turma })
+                });
+
+                if (response.ok) {
+                    await loadHorarios();
+                    document.getElementById('responseMessage').innerText = id_horario ? 'Horário atualizado com sucesso.' : 'Horário criado com sucesso.';
+                    document.getElementById('horarioForm').reset();
+                } else {
+                    const errorText = await response.text();
+                    document.getElementById('responseMessage').innerText = `Erro ao salvar horário: ${errorText}`;
+                }
+            } catch (error) {
+                console.error('Erro ao guardar horário:', error.message);
+            }
         });
     </script>
 </body>

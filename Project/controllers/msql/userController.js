@@ -74,21 +74,7 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
-exports.getUserById = async (req, res) => {
-    const { id } = req.params;
-    try {
-        const user = await prisma.utilizadores.findUnique({
-            where: { id_utilizador: parseInt(id, 10) }
-        });
-        if (!user) {
-            return res.status(404).json({ message: 'Utilizador não encontrado' });
-        }
-        res.json(user);
-    } catch (error) {
-        console.error('Erro ao buscar utilizador por ID:', error.message);
-        res.status(500).send('Internal Server Error');
-    }
-};
+
 
 exports.createUser = async (req, res) => {
     const { name, email, password, isAdmin, turmaId } = req.body;

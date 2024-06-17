@@ -20,6 +20,7 @@ model horarios {
   Data_inicio DateTime
   Data_fim    DateTime
   id_turma    Int
+  Disciplina  String?   @db.VarChar(255)
   turma       turmas    @relation(fields: [id_turma], references: [id_turma])
 }
 
