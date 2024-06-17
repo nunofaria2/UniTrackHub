@@ -11,4 +11,7 @@ router.post('/createHorario', isLoggedIn, horariosController.createHorario);
 router.put('/:id', isLoggedIn, horariosController.updateHorario);
 router.delete('/:id', isLoggedIn, horariosController.deleteHorario);
 
+router.get('/byTurma/:turmaId', horariosController.getHorariosByTurma);
+
+
 module.exports = router;

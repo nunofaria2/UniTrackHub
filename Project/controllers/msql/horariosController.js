@@ -65,4 +65,16 @@ exports.deleteHorario = async (req, res) => {
     }
 };
 
+exports.getHorariosByTurma = async (req, res) => {
+    const { turmaId } = req.params;
+    try {
+        const horarios = await prisma.horarios.findMany({
+            where: { id_turma: parseInt(turmaId, 10) }
+        });
+        res.json(horarios);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch horarios by turma' });
+    }
+};
+
 

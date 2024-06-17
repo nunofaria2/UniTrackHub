@@ -7,7 +7,27 @@
     <title>Horário</title>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.11/index.global.min.js'></script>
     <script>
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
+    // Fetch the logged user
+    let turmaId;
+    try {
+        const response = await fetch('/api/msql/getLoggedUser', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+        });
+        if (response.ok) {
+            const loggedUser = await response.json();
+            turmaId = loggedUser.id_turma; // Supondo que o usuário tenha uma turma associada
+        } else {
+            console.error('Failed to fetch logged user');
+            return;
+        }
+    } catch (error) {
+        console.error('Erro ao buscar o utilizador logado:', error.message);
+        return;
+    }
+
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'timeGridWeek',
@@ -18,7 +38,8 @@ document.addEventListener('DOMContentLoaded', function() {
         slotMaxTime: '24:00:00',
         events: async function(fetchInfo, successCallback, failureCallback) {
             try {
-                let response = await fetch('/api/msql/horarios');
+                let response = await fetch(`/api/msql/horarios/byTurma/${turmaId}`);
+                if (!response.ok) throw new Error('Erro ao buscar horários');
                 let events = await response.json();
                 let calendarEvents = events.map(event => ({
                     id: event.id_horario,
@@ -74,24 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Logout falhou');
             }
         }
-
-        document.addEventListener('DOMContentLoaded', async () => {
-        try {
-            const response = await fetch('/api/msql/getLoggedUser', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            });
-            const loggedUser = await response.json();
-        } catch (error) {
-            console.error('Erro ao buscar o utilizador logado:', error.message);
-            // Trate o erro conforme necessário
-        }
-
-        });
     </script>
-
 </body>
 </html>

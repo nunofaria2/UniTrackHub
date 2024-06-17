@@ -149,10 +149,20 @@ exports.deleteUser = async (req, res) => {
 
 exports.getLoggedUser = async (req, res) => {
     try {
-        const userId = req.session.user.id_utilizador; // Ajuste o caminho conforme a estrutura da sua sessão
+        if (!req.session.user) {
+            return res.status(401).json({ message: 'Usuário não logado' });
+        }
+
+        const userId = req.session.user.id_utilizador;
         const user = await prisma.utilizadores.findUnique({
-            where: { id_utilizador: userId }
+            where: { id_utilizador: userId },
+            include: { turmas: true } // Inclua a relação com as turmas
         });
+
+        if (!user) {
+            return res.status(404).json({ message: 'Utilizador não encontrado' });
+        }
+
         res.json(user);
     } catch (error) {
         console.error('Erro ao buscar o utilizador logado:', error.message);
