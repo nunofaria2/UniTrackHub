@@ -4,35 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <title>Login</title>
+    <title>Horário</title>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.11/index.global.min.js'></script>
     <script>
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Seleciona o elemento HTML com o ID 'calendar'
     var calendarEl = document.getElementById('calendar');
-    // Inicializa um novo objeto FullCalendar com o elemento selecionado
-    var calendar = new FullCalendar.Calendar(calendarEl,
-    {
-        // Define a visualização inicial como 'timeGridWeek'
+    var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'timeGridWeek',
-        // Define a localidade para Português 
         locale: 'pt',
-        // Formato do rótulo do slot para exibir horas e minutos
         slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: false },
-        // Define a duração do slot para 30 minutos
         slotDuration: '00:30:00',
-        // Define o horário mínimo para exibição
         slotMinTime: '07:00:00',
-        // Define o horário máximo para exibição
         slotMaxTime: '24:00:00',
-        // Define o ficheiro JSON que contém os eventos
-        events: 'Horario.json'
+        events: async function(fetchInfo, successCallback, failureCallback) {
+            try {
+                let response = await fetch('/api/msql/horarios');
+                let events = await response.json();
+                let calendarEvents = events.map(event => ({
+                    id: event.id_horario,
+                    title: `Turma ${event.id_turma}`,
+                    start: event.Data_inicio,
+                    end: event.Data_fim
+                }));
+                successCallback(calendarEvents);
+            } catch (error) {
+                failureCallback(error);
+            }
+        }
     });
-    // Renderiza o calendário
     calendar.render();
 });
-
     </script>
 </head>
 <body>
@@ -73,6 +74,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Logout falhou');
             }
         }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch('/api/msql/getLoggedUser', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+            const loggedUser = await response.json();
+        } catch (error) {
+            console.error('Erro ao buscar o utilizador logado:', error.message);
+            // Trate o erro conforme necessário
+        }
+
+        });
     </script>
 
 </body>

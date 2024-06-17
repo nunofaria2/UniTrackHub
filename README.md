@@ -10,12 +10,14 @@ UniTrackHub
    ├─ backOffice
    │  ├─ Horario.html
    │  ├─ Horario.json
+   │  ├─ horariosCRUD.html
    │  ├─ HorariosTurmas.html
    │  ├─ Main.html
    │  ├─ turmaCRUD.html
    │  └─ userCRUD.html
    ├─ controllers
    │  └─ msql
+   │     ├─ horariosController.js
    │     ├─ turmaController.js
    │     └─ userController.js
    ├─ data
@@ -52,6 +54,7 @@ UniTrackHub
    ├─ README.md
    ├─ routes
    │  ├─ msql
+   │  │  ├─ horariosRoute.js
    │  │  ├─ index.js
    │  │  ├─ turmaRoute.js
    │  │  └─ userRoute.js

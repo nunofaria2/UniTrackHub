@@ -17,8 +17,8 @@ model turmas {
 
 model horarios {
   id_horario Int       @id @default(autoincrement())
-  Data_inicio DateTime? @db.Date
-  Data_fim    DateTime? @db.Date
+  Data_inicio DateTime
+  Data_fim    DateTime
   id_turma    Int
   turma       turmas    @relation(fields: [id_turma], references: [id_turma])
 }

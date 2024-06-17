@@ -8,6 +8,8 @@ const publicoRouter = require('./routes/publico');
 const routerMsql = require('./routes/msql/userRoute');
 const routerMsqlTurma = require('./routes/msql/turmaRoute');
 const privadoRouter = require('./routes/privado');
+const routerMsqlHorarios = require('./routes/msql/horariosRoute');
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -23,6 +25,7 @@ app.use(session({
 
 app.use('/api/public', publicoRouter);
 app.use('/api/msql', routerMsql);
+app.use('/api/msql/horarios', routerMsqlHorarios);
 app.use('/api/msql/turma', routerMsqlTurma);
 app.use('/api/priv', privadoRouter);
 
