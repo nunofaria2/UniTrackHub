@@ -13,8 +13,6 @@ router.get('/getLoggedUser', isLoggedIn, userController.getLoggedUser);
 // GET todos os utilizadores
 router.get('/getAllUsers', isLoggedIn, userController.getAllUsers);
 
-// GET utilizador por ID
-
 // POST criar utilizador
 router.post('/createUser', isLoggedIn, userController.createUser);
 
