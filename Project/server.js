@@ -20,7 +20,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'default_secret',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } // Em produção, use true se estiver usando HTTPS
+    cookie: { secure: false } 
 }));
 
 app.use('/api/public', publicoRouter);

@@ -179,7 +179,7 @@
                     document.getElementById('horarioForm').reset();
                 } else {
                     const errorText = await response.text();
-                    document.getElementById('responseMessage').innerText = `Erro ao salvar horário: ${errorText}`;
+                    document.getElementById('responseMessage').innerText = `Erro ao guardar horário: ${errorText}`;
                 }
             } catch (error) {
                 console.error('Erro ao guardar horário:', error.message);

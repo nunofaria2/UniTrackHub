@@ -106,7 +106,7 @@
                 });
                 const loggedUser = await response.json();
                 
-                // Preencher a tabela com as informações do usuário logado
+                // Preencher a tabela com as informações do utilizador logado
                 const userProfile = document.getElementById('userProfile');
                 const userRow = document.createElement('tr');
                 userRow.innerHTML = `
@@ -128,7 +128,7 @@
                 document.getElementById('turmaName').textContent = turma.NomeTurma;
                 
             } catch (error) {
-                console.error('Erro ao buscar o usuário logado:', error.message);
+                console.error('Erro ao buscar o utilizador logado:', error.message);
                 // Trate o erro conforme necessário
             }
         });
