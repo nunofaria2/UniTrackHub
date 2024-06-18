@@ -7,23 +7,76 @@
     <title>Horarios das Turmas</title>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.11/index.global.min.js'></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('turmaCalendar'); // Renomeado para turmaCalendar
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                locale: 'pt',
+                slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: false },
+                slotDuration: '00:30:00',
+                slotMinTime: '07:00:00',
+                slotMaxTime: '24:00:00',
+                events: []
+            });
 
-document.addEventListener('DOMContentLoaded', function()
-{
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl,
-    {
-        initialView: 'timeGridWeek',
-        locale: 'pt', // Set the locale to Portuguese
-        slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: false }, // Display hours and minutes with zero padding
-        slotDuration: '00:30:00', // Change the slot duration to 30 minutes
-        slotMinTime: '07:00:00', // Change the minimum time to display
-        slotMaxTime: '24:00:00',// Change the maximum time to display
-        events: 'HorariosTurmas.json' // Carrega os eventos do ficheiro JSON
-    });
-    calendar.render();
-});
+            // Função para carregar horários da turma selecionada
+            async function loadEventsByTurma(turmaId) {
+                try {
+                    let response = await fetch(`/api/msql/horarios/byTurma/${turmaId}`);
+                    if (!response.ok) throw new Error('Erro ao buscar horários');
+                    let events = await response.json();
+                    let calendarEvents = events.map(event => ({
+                        id: event.id_horario,
+                        title: `${event.Disciplina}`,
+                        start: event.Data_inicio,
+                        end: event.Data_fim
+                    }));
+                    calendar.removeAllEvents();
+                    calendar.addEventSource(calendarEvents);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
 
+            // Carregar turmas disponíveis no select
+            async function loadTurmas() {
+                try {
+                    const response = await fetch('/api/msql/turma', {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include'
+                    });
+                    if (response.ok) {
+                        const turmas = await response.json();
+                        const turmaSelect = document.getElementById('turma');
+                        turmaSelect.innerHTML = ''; // Limpa as opções existentes
+                        turmas.forEach(turma => {
+                            let option = document.createElement('option');
+                            option.value = turma.id_turma;
+                            option.textContent = turma.NomeTurma;
+                            turmaSelect.appendChild(option);
+                        });
+                    } else {
+                        console.error('Failed to fetch turmas');
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar turmas:', error.message);
+                }
+            }
+
+            // Evento para quando a turma é selecionada
+            document.getElementById('turma').addEventListener('change', function() {
+                let turmaId = this.value;
+                if (turmaId !== '') {
+                    loadEventsByTurma(turmaId);
+                } else {
+                    calendar.removeAllEvents();
+                }
+            });
+
+            calendar.render();
+            loadTurmas(); // Carregar as turmas ao iniciar a página
+        });
     </script>
 </head>
 <body>
@@ -34,40 +87,29 @@ document.addEventListener('DOMContentLoaded', function()
                     <h1>UniTrackHub</h1>
                 </div>
                 <div class="col text-right">
-                    <a href="Main.html" class="btn btn-link text-white">Back</a>
+                    <a href="http://localhost:4242/api/priv/main" class="btn btn-link text-white">Back</a>
                 </div>
             </div>
         </div>
     </header>
 
-    <br><br><br> <br><br>
+    <br><br><br><br><br>
 
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-3">
                 <div class="form-group">
-                    <label for="curso">Curso:</label>
-                    <select class="form-control" id="curso">
-                        <option value="curso1">Curso 1</option>
-                        <option value="curso2">Curso 2</option>
-                        <!-- Adicione mais opções de cursos conforme necessário -->
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
                     <label for="turma">Turma:</label>
                     <select class="form-control" id="turma">
-                        <option value="turma1">Turma 1</option>
-                        <option value="turma2">Turma 2</option>
-                        <!-- Adicione mais opções de turmas conforme necessário -->
+                        <option value="">Selecione uma turma</option>
+                        <!-- As opções de turmas serão carregadas dinamicamente aqui -->
                     </select>
                 </div>
             </div>
         </div>
         <div class="row justify-content-center">
             <div class="col-md-12">
-                <div id='calendar'></div>
+                <div id='turmaCalendar'></div> <!-- Renomeado para turmaCalendar -->
             </div>
         </div>
     </div>
@@ -87,6 +129,5 @@ document.addEventListener('DOMContentLoaded', function()
             }
         }
     </script>
-
 </body>
 </html>

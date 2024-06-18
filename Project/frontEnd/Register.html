@@ -89,7 +89,7 @@
 
                 const data = await response.json();
                 alert("O " + dados.name + " foi adicionado com sucesso!");
-                window.location.replace("main"); // Redireciona para a página de login
+                window.location.replace("http://localhost:4242/api/public/login"); // Redireciona para a página de login
             } catch (error) {
                 alert("Houve um erro: " + error.message);
             }
