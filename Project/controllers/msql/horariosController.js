@@ -22,31 +22,36 @@ exports.getHorarioById = async (req, res) => {
 };
 
 exports.createHorario = async (req, res) => {
-    const { Data_inicio, Data_fim, id_turma } = req.body;
+    const { Data_inicio, Data_fim, id_turma, Disciplina } = req.body;
+    console.log('Dados recebidos:', { Data_inicio, Data_fim, id_turma, Disciplina });
+
     try {
         const newHorario = await prisma.horarios.create({
             data: {
                 Data_inicio: new Date(Data_inicio),
                 Data_fim: new Date(Data_fim),
-                id_turma: parseInt(id_turma)
+                id_turma: parseInt(id_turma),
+                Disciplina: Disciplina
             }
         });
         res.json(newHorario);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Failed to create horario' });
     }
 };
 
 exports.updateHorario = async (req, res) => {
     const { id } = req.params;
-    const { Data_inicio, Data_fim, id_turma } = req.body;
+    const { Data_inicio, Data_fim, id_turma, Disciplina } = req.body;
     try {
         const updatedHorario = await prisma.horarios.update({
             where: { id_horario: parseInt(id) },
             data: {
                 Data_inicio: new Date(Data_inicio),
                 Data_fim: new Date(Data_fim),
-                id_turma: parseInt(id_turma)
+                id_turma: parseInt(id_turma),
+                Disciplina
             }
         });
         res.json(updatedHorario);
@@ -76,5 +81,3 @@ exports.getHorariosByTurma = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch horarios by turma' });
     }
 };
-
-

@@ -43,7 +43,7 @@
                 let events = await response.json();
                 let calendarEvents = events.map(event => ({
                     id: event.id_horario,
-                    title: `Turma ${event.id_turma}`,
+                    title: `${event.Disciplina}`,
                     start: event.Data_inicio,
                     end: event.Data_fim
                 }));

@@ -20,17 +20,18 @@
         </div>
     </header>
 
-    <br>
-    <br>
-    <br>
-    <br>
-    
+    <br><br><br><br>
+
     <div class="container mt-5">
         <h1>CRUD Horários</h1>
-        
+
         <!-- Formulário para Criar/Atualizar Horário -->
         <form id="horarioForm">
             <input type="hidden" id="id_horario" name="id_horario">
+            <div class="form-group">
+                <label for="Disciplina">Disciplina:</label>
+                <input type="text" id="Disciplina" name="Disciplina" class="form-control" required>
+            </div>
             <div class="form-group">
                 <label for="Data_inicio">Data de Início:</label>
                 <input type="datetime-local" id="Data_inicio" name="Data_inicio" class="form-control" required>
@@ -40,19 +41,22 @@
                 <input type="datetime-local" id="Data_fim" name="Data_fim" class="form-control" required>
             </div>
             <div class="form-group">
-                <label for="id_turma">ID Turma:</label>
-                <input type="number" id="id_turma" name="id_turma" class="form-control" required>
-            </div>
+                <label for="id_turma">Turma:</label>
+                <select id="id_turma" name="id_turma" class="form-control" required>
+                    <!-- Options serão preenchidos dinamicamente via JavaScript -->
+                </select>
+            </div> 
             <button type="submit" class="btn btn-primary">Guardar</button>
         </form>
         <div id="responseMessage" class="mt-3"></div>
-        
+
         <!-- Lista de Horários -->
         <h2 class="mt-5">Lista de Horários</h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Disciplina</th>
                     <th>Data de Início</th>
                     <th>Data de Fim</th>
                     <th>ID Turma</th>
@@ -69,8 +73,27 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async function() {
+            await loadTurmas();
             await loadHorarios();
         });
+
+        async function loadTurmas() {
+            try {
+                const response = await fetch('http://localhost:4242/api/msql/turma');
+                const turmas = await response.json();
+                const turmaSelect = document.getElementById('id_turma');
+                turmaSelect.innerHTML = '';
+
+                turmas.forEach(turma => {
+                    const option = document.createElement('option');
+                    option.value = turma.id_turma;
+                    option.textContent = turma.NomeTurma;
+                    turmaSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Erro ao listar turmas:', error.message);
+            }
+        }
 
         async function loadHorarios() {
             try {
@@ -83,6 +106,7 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${horario.id_horario}</td>
+                        <td>${horario.Disciplina}</td>
                         <td>${new Date(horario.Data_inicio).toLocaleString()}</td>
                         <td>${new Date(horario.Data_fim).toLocaleString()}</td>
                         <td>${horario.id_turma}</td>
@@ -106,6 +130,7 @@
                 document.getElementById('Data_inicio').value = new Date(horario.Data_inicio).toISOString().slice(0, 16);
                 document.getElementById('Data_fim').value = new Date(horario.Data_fim).toISOString().slice(0, 16);
                 document.getElementById('id_turma').value = horario.id_turma;
+                document.getElementById('Disciplina').value = horario.Disciplina; // Preencher o campo de Disciplina
             } catch (error) {
                 console.error('Erro ao listar horário:', error.message);
             }
@@ -137,6 +162,7 @@
             const Data_inicio = new Date(document.getElementById('Data_inicio').value).toISOString();
             const Data_fim = new Date(document.getElementById('Data_fim').value).toISOString();
             const id_turma = document.getElementById('id_turma').value;
+            const Disciplina = document.getElementById('Disciplina').value; // Pegar o valor da Disciplina do formulário
             const method = id_horario ? 'PUT' : 'POST';
             const url = id_horario ? `http://localhost:4242/api/msql/horarios/${id_horario}` : 'http://localhost:4242/api/msql/horarios/createHorario';
 
@@ -144,7 +170,7 @@
                 const response = await fetch(url, {
                     method: method,
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ Data_inicio, Data_fim, id_turma })
+                    body: JSON.stringify({ Data_inicio, Data_fim, id_turma, Disciplina })
                 });
 
                 if (response.ok) {
