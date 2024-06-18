@@ -8,27 +8,32 @@ datasource db {
 }
 
 model turmas {
-  id_turma    Int           @id @default(autoincrement())
-  NomeTurma   String        @db.VarChar(255)
-  Descricao   String?       @db.Text
-  horarios    horarios[]
+  id_turma     Int            @id @default(autoincrement())
+  NomeTurma    String         @db.VarChar(255)
+  Descricao    String?        @db.Text
+  horarios     horarios[]
   utilizadores utilizadores[]
 }
 
 model horarios {
-  id_horario Int       @id @default(autoincrement())
-  Data_inicio DateTime
-  Data_fim    DateTime
+  id_horario  Int       @id @default(autoincrement())
+  Data_inicio DateTime? @db.DateTime(0)
+  Data_fim    DateTime? @db.DateTime(0)
   id_turma    Int
+  Disciplina  String    @db.VarChar(255)
   turma       turmas    @relation(fields: [id_turma], references: [id_turma])
+
+  @@index([id_turma], map: "horarios_id_turma_fkey")
 }
 
 model utilizadores {
-  id_utilizador Int       @id @default(autoincrement())
-  Nome          String?   @db.VarChar(255)
-  Email         String?   @unique @db.VarChar(255)
-  Passe         String?   @db.VarChar(255)
-  isAdmin       Boolean   @default(false)
+  id_utilizador Int     @id @default(autoincrement())
+  Nome          String? @db.VarChar(255)
+  Email         String? @unique @db.VarChar(255)
+  Passe         String? @db.VarChar(255)
+  isAdmin       Boolean @default(false)
   id_turma      Int?
-  turmas        turmas?   @relation(fields: [id_turma], references: [id_turma])
+  turmas        turmas? @relation(fields: [id_turma], references: [id_turma])
+
+  @@index([id_turma], map: "utilizadores_id_turma_fkey")
 }
