@@ -145,7 +145,7 @@
                     document.getElementById('turmaForm').reset();
                 } else {
                     const errorText = await response.text();
-                    document.getElementById('responseMessage').innerText = `Erro ao salvar turma: ${errorText}`;
+                    document.getElementById('responseMessage').innerText = `Erro ao guardar turma: ${errorText}`;
                 }
             } catch (error) {
                 console.error('Erro ao guardar turma:', error.message);
